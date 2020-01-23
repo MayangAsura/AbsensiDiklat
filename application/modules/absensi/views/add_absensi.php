@@ -12,7 +12,7 @@
                                 <label>Nama Diklat</label> 
                                 <select class="form-control" id="diklat_id" name="diklat_id" style="width: 100%">
                                     <option value=""></option>
-                                    <<?php foreach ($get_diklat as $key => $value): ?>
+                                    <?php foreach ($get_diklat as $key => $value): ?>
                                     <option value="<?= $value->id?>"><?=$value->kode_diklat.' - '.$value->nama_diklat?></option>
                                 <?php endforeach ?>
                             </select>
@@ -22,7 +22,7 @@
                             <label>Nama Pegawai</label> 
                             <select class="form-control" id="pegawai_id" name="pegawai_id" style="width: 100%">
                                 <option value=""></option>
-                                <<?php foreach ($get_pegawai as $key => $value): ?>
+                                <?php foreach ($get_pegawai as $key => $value): ?>
                                 <option value="<?= $value->id?>"><?=$value->nip.' - '.$value->nama_lengkap?></option>
                             <?php endforeach ?>
                         </select>

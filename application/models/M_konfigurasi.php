@@ -18,6 +18,7 @@ class M_konfigurasi extends CI_Model
         //$this->db->limit(1); 
         $this->db->order_by("id_konfig", "DESC");
         return $this->db->get($this->table)->row();
-    }
+	}
+	
 
 }

@@ -3,25 +3,11 @@
 		<div class="card">
 			<div class="card-body card-statistics">
 				<div style="float: right;">
+					<button class="btn btn-primary btn-fw" onclick="tambah()"><span class="fa fa-plus"></span><i class="mdi mdi-plus"></i>Tambah</button>
 					<button class="btn btn-info" onclick="reload_table()"><i class="mdi mdi-refresh m"></i></button>
 				</div>
-				<h3>Data absensi</h3>
+				<h3>Jadwal Diklat</h3>
 				<hr/>
-				<div class="form-group">
-					<label>Kode dan Nama Diklat</label> 
-					<select class="form-control" id="diklat_id" name="diklat_id" style="width: 100%">
-						<option value=""></option>
-						<?php foreach ($get_diklat as $key => $value): ?>
-						<option value="<?= $value->id?>"><?=$value->kode_diklat.' - '.$value->nama_diklat?></option>
-						<?php endforeach ?>
-					</select>
-					<small class="help-block text-danger"></small>
-                </div>
-				<hr/>
-				<input name="qr_nip" id="qr_nip" onmouseover="this.focus();" type="text" class="form-control" >
-
-				<div id="autoSave"></div> 
-
 				<div class="table-responsive">
 					<table class="table table-hover" id="mydata" style="text-align: center;">
 						<thead>
@@ -30,19 +16,22 @@
 									#
 								</th>
 								<th>
-									NIP - Nama Pegawai
+									Kode Diklat
 								</th>
 								<th>
-									Kode - Nama Diklat
+									Nama Diklat
 								</th>
 								<th>
 									Tanggal
 								</th>
 								<th>
-									Jam Masuk
+									Tempat
 								</th>
 								<th>
-									Keterangan
+									Waktu
+								</th>
+								<th>
+									Dresscode
 								</th>
 								<th>Aksi</th>
 							</tr>
@@ -55,7 +44,7 @@
 		</div>
 	</div>
 </div>
-<?php include('add_absensi.php'); ?>
+<?php include('add_jadwal.php'); ?>
 
 <script type="text/javascript">
 var save_method; //for save method string
@@ -63,61 +52,16 @@ var table;
 
 $(document).ready(function(){
 
-	// setTimeout(function(){
-   	// 	window.location.reload(1);
-	// }, 5000);
-
-	function autoSave()  
-	{  
-		var diklat_id2 = $('#diklat_id').val();
-		var qr_nip = $('#qr_nip').val();
-
-		if(qr_nip != '' && diklat_id2 != "")  
-		{  		
-				$.ajax({  
-					url: "<?php echo site_url('absensi/scan_kehadiran/')?>",  
-					method:"POST",  
-					data:{qr_nip:qr_nip, diklat_id:diklat_id2},  
-					dataType:"JSON",  
-					success:function(data)  
-					{  	
-						console.log(data);
-						var alert = data.alert;
-						if(data.status == true){
-							swal("Success !", "Anda Berhasil Absen!", "success");
-							$('#autoSave').html("<div class='alert alert-success'>"+alert+"</div>"); 
-						}else{
-							swal("Error !", alert , "error");
-							$('#autoSave').html("<div class='alert alert-danger'>"+alert+"</div>"); 
-						}
-						 
-						setInterval(function(){  
-							$('#autoSave').html(''); 
-							$('#qr_nip').val('');  
-						}, 3000);  
-					}  
-				});  
-			// }
-			// else{
-			// $('#autoSave').html("<div class='alert alert-danger'>Jadwal Tidak Sesuai</div>");
-			// }
-		}            
-	}  
-
-	setInterval(function(){   
-		autoSave(); 
-		reload_table();  
-	}, 3000);  
 
 	table = $("#mydata").dataTable({
-		processing: false,
+		processing: true,
 		language: {
 			searchPlaceholder: "Cari Data",
 			processing: '<img src="<?=base_url('images/load.gif')?>" width="100"><span class="text-success">Loading...</span>',
 		},
 		"serverSide": true,
 		"ajax": {
-			"url": "<?php echo base_url()?>index.php/absensi/ajax_list",
+			"url": "<?php echo base_url()?>index.php/diklat/ajax_list",
 			"type": "POST"
 		},
 		"columnDefs":[{    
@@ -142,10 +86,11 @@ $("select").change(function(){
 	$(this).next().empty();
 });
 
+
 function reload_table()
 {
-    table.api().ajax.reload(null,false); //reload datatable ajax 
-}
+    	table.api().ajax.reload(null,false); //reload datatable ajax 
+    }
 
     function edit(id)
     {
@@ -156,17 +101,21 @@ function reload_table()
 
     //Ajax Load data from ajax
     $.ajax({
-    	url : "<?php echo site_url('absensi/ajax_edit/')?>/" + id,
+    	url : "<?php echo site_url('diklat/ajax_edit/')?>/" + id,
     	type: "GET",
     	dataType: "JSON",
     	success: function(data)
     	{
 
-    		$('[name="id_absensi"]').val(data.id);
-    		$('[name="pegawai_id"]').val(data.pegawai_id).trigger('change');
-    		$('[name="diklat_id"]').val(data.diklat_id).trigger('change');
-    		$('[name="tgl"]').val(data.tgl);
-    		$('[name="jam_masuk"]').val(data.jam_masuk);
+    		$('[name="id_diklat"]').val(data.id);
+    		$('[name="kode_diklat"]').val(data.kode_diklat);
+    		$('[name="nama_diklat"]').val(data.nama_diklat);
+    		$('[name="tgl_mulai"]').val(data.tgl_mulai);
+    		$('[name="tgl_selesai"]').val(data.tgl_berakhir);
+    		$('[name="tempat"]').val(data.tempat);
+    		$('[name="jam_mulai"]').val(data.jam_mulai);
+    		$('[name="jam_selesai"]').val(data.jam_selesai);
+    		$('[name="dc"]').val(data.dc);
 
             $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
             $('.title').text('Edit Data : '+data.nama); // Set title to Bootstrap modal title
@@ -189,7 +138,7 @@ function hapus(id)
 	.then((willDelete) => {
 		if (willDelete) {
 			$.ajax({
-				url : "<?php echo site_url('absensi/ajax_delete')?>/"+id,
+				url : "<?php echo site_url('diklat/ajax_delete')?>/"+id,
 				type: "POST",
 				dataType: "JSON",
 				success: function(data)

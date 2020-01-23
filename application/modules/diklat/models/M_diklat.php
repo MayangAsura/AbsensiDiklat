@@ -100,7 +100,7 @@ public function get_all()
 public function get_diklat()
 {
     $this->db->order_by($this->id, "DESC");
-    $this->db->where("tgl_mulai >",date('Y-m-d'));
+    $this->db->where("tgl_mulai >=",date('Y-m-d'));
     return $this->db->get($this->table)->result();
 }
 

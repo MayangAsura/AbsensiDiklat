@@ -51,6 +51,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $route['default_controller'] = 'login';
 $route['data_diklat'] = 'diklat/index';
+$route['data_pegawai'] = 'pegawai/index';
+$route['jadwal'] = 'diklat/jadwal';
 $route['data_absensi'] = 'absensi/index';
 $route['profil/(:any)'] = 'login/profil/$1';
 $route['404_override'] = 'my404';

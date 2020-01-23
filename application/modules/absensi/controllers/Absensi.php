@@ -1,4 +1,7 @@
 <?php
+
+use SebastianBergmann\Environment\Console;
+
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class absensi extends MX_Controller 
@@ -161,24 +164,56 @@ class absensi extends MX_Controller
 		date_default_timezone_set('Asia/Jakarta');
 
 		$nip = $this->input->post('qr_nip');
+		$diklat_id2 = $this->input->post('diklat_id');
 		$diklat_id = $this->diklat->get_diklat_id();
 		$pegawai_id = $this->pegawai->get_by_nip($nip);
+		
+		$ngabsen = $this->m_absensi->get_ngabsen($nip, date('Y-m-d'), $diklat_id2);
+		$jadwal = $this->m_absensi->get_jadwal($nip, date('Y-m-d'), $diklat_id2);
+		
+		// $cekJadwal = $this->m_absensi->get_jadwal($nip);
+		// // if($cekJadwal > 1){
+			
+		// // }
+		$absensi = $this->m_absensi->get_by_absen($nip, date('Y-m-d'),$diklat_id2 );
+		if($jadwal){
+		
+			//cek jadwal, jika di jadwal ada data nya
+			if ($ngabsen < $jadwal) {
+				$data = array(
+					'diklat_id'=> $diklat_id2,
+					'pegawai_id' => $pegawai_id->id,
+					'tgl' => date('Y-m-d'),
+					'jam_masuk' => date('H:i:s'),
+					'keterangan' => 'HADIR'
+				);
+				// $kirim = $this->kirim_email($pegawai_id->email, "Terima Kasih, ".$pegawai_id->nama_lengkap." Anda Sudah Hadir Pada Diklat ".$diklat_id->nama_diklat." Pada Pukul " .date('H:i:s')             );
+				$message = [
+					'status' => $this->m_absensi->save($data),
+					'jadwal' => $jadwal,
+					'absen' => $absensi,
+					'alert' => "Berhasil Absen"
+				];
+			}
+			else{
+				$message = [
+					'status' => false,
+					'jadwal' => $jadwal,
+					'absen' => $absensi,
+					'alert' => "Udah Mencapai Batas Maksimum Absen"
+				];
+			}
 
-		$absensi = $this->m_absensi->get_by_absen($nip, date('Y-m-d'));
-
-		if (count($absensi) == 0) {
-
-			$data = array(
-				'diklat_id'=> $diklat_id->id,
-				'pegawai_id' => $pegawai_id->id,
-				'tgl' => date('Y-m-d'),
-				'jam_masuk' => date('H:i:s'),
-				'keterangan' => 'HADIR'
-			);
-			$kirim = $this->kirim_email($pegawai_id->email, "Terima Kasih, ".$pegawai_id->nama_lengkap." Anda Sudah Hadir Pada Diklat ".$diklat_id->nama_diklat." Pada Pukul " .date('H:i:s')             );
-			$insert = $this->m_absensi->save($data);
-		} 
-
-		echo json_encode($insert);
+		}else{
+			$message = [
+				'status' => false,
+				'alert' => "Salah Diklat!"
+			];
+		}
+		echo json_encode($message);
 	}
+
+	// public function cekJadwal(){
+		
+	// }
 }

@@ -12,7 +12,7 @@
                                 <label>Kode dan Nama Diklat</label> 
                                 <select class="form-control" id="diklat_id" name="diklat_id" style="width: 100%">
                                     <option value=""></option>
-                                    <<?php foreach ($get_diklat as $key => $value): ?>
+                                    <?php foreach ($get_diklat as $key => $value): ?>
                                     <option value="<?= $value->id?>"><?=$value->kode_diklat.' - '.$value->nama_diklat?></option>
                                 <?php endforeach ?>
                             </select>

@@ -10,9 +10,10 @@ class Pegawai extends MX_Controller
     $this->load->model('diklat/m_diklat','diklat');
     $this->load->model('format/m_format','format');
     $this->load->model('keikutsertaan/m_keikutsertaan','keikutsertaan');
-    $this->load->library('encrypt');
+    $this->load->library('encryption');
 		$this->load->library('ciqrcode'); //pemanggilan library QR CODE
     $this->load->library(array('PHPExcel','PHPExcel/IOFactory'));
+
   }
 
   function _template($data) {

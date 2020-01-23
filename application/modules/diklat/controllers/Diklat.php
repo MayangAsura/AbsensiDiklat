@@ -6,7 +6,7 @@ class Diklat extends MX_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->load->model('m_diklat');
+    $this->load->model('m_diklat');
 	}
 
 	function _template($data) {
@@ -19,7 +19,17 @@ class Diklat extends MX_Controller
 			'konten' => 'data_diklat'
 		);
 		$this->_template($data);
-	}
+  }
+
+	public function jadwal()
+	{
+		$data = array(
+      'konten' => 'jadwal_diklat',
+      'get_diklat' => $this->m_diklat->get_diklat()
+		);
+		$this->_template($data);
+  }
+  
   public function cek_kode()
   {
     $kode = $this->input->post('kode');

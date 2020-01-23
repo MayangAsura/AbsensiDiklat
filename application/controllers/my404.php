@@ -10,6 +10,7 @@ class my404 extends CI_Controller
 	{ 
 		$this->output->set_status_header('404'); 
 		redirect(site_url('dashboard'));
+
 	} 
 } 
 ?>

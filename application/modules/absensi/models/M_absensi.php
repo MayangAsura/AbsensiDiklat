@@ -106,16 +106,61 @@ class M_absensi extends CI_Model
         return $this->db->get($this->table)->result();
     }
 
-    public function get_by_absen($nip, $date)
+    // public function get_by_absen($nip, $date)
+    // {
+    //     $this->db->select("absensi.*");
+    //     $this->db->from($this->table);
+    //     $this->db->where("pegawai.nip",$nip);
+    //     $this->db->where("absensi.tgl",$date);
+    //     $this->db->where("absensi.tgl",$date);
+    //     $this->db->join("pegawai", "pegawai.id = absensi.pegawai_id","INNER");
+    //     $query = $this->db->get();
+
+    //     return $query->row();
+    // }
+
+    public function get_by_absen($nip, $date, $diklat_id2)
     {
-        $this->db->select("absensi.*");
-        $this->db->from($this->table);
-        $this->db->where("pegawai.nip",$nip);
-        $this->db->where("absensi.tgl",$date);
-        $this->db->join("pegawai", "pegawai.id = absensi.pegawai_id","INNER");
+        $this->db->select("*");
+        $this->db->from("diklat");
+        $this->db->join("keikutsertaan", "keikutsertaan.diklat_id = diklat.id");
+        $this->db->join("pegawai", "pegawai.id = keikutsertaan.pegawai_id");
+        $this->db->where("pegawai.nip =",$nip);
+        $this->db->where("diklat.tgl_mulai <=",$date);
+        $this->db->where("diklat.tgl_berakhir >=",$date);
+        $this->db->where("keikutsertaan.diklat_id =",$diklat_id2);
+
+        // $this->db->where("diklat.jam_mulai >=",$date);
+        // $this->db->where("absensi.tgl <=",$date);
+        
         $query = $this->db->get();
 
-        return $query->row();
+        return $query->num_rows();
+    }
+
+    public function get_jadwal($nip, $date, $id_diklat){
+        $this->db->select("*");
+        $this->db->from("diklat");
+        $this->db->join("keikutsertaan", "keikutsertaan.diklat_id = diklat.id");
+        $this->db->join("pegawai", "pegawai.id = keikutsertaan.pegawai_id");
+        $this->db->where("pegawai.nip =",$nip);
+        $this->db->where("diklat.tgl_mulai <=",$date);
+        $this->db->where("diklat.tgl_berakhir >=",$date);
+        $this->db->where("diklat.id",$id_diklat);
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    public function get_ngabsen($nip, $date, $id_diklat){
+        $this->db->select("*");
+        $this->db->from("absensi");
+        $this->db->join("pegawai", "absensi.pegawai_id = pegawai.id");
+        $this->db->join("keikutsertaan", "pegawai.id = keikutsertaan.pegawai_id");
+        $this->db->where("pegawai.nip =",$nip);
+        $this->db->where("absensi.tgl = ",$date);
+        $this->db->where("absensi.diklat_id ",$id_diklat);
+        $query = $this->db->get();
+        return $query->num_rows();
     }
 
     public function save($data)
